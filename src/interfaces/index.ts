@@ -11,5 +11,5 @@ export type IMain = (input: IInput) => void;
 export type IGeneratePathToFile = (folder: string, mode: string) => string;
 export type IReadFile = (filePath: string, loadMode: string) => Promise<string>;
 export type IParseEnv = (IParseEnv: string) => DotenvParseOutput;
-export type ISetEnvVariable = (key: [string, string]) => void;
-export type IExportEnvVariables = (env: DotenvParseOutput) => void;
+export type ISetEnvVariable = (mode: string) => (key: [string, string]) => void;
+export type IExportEnvVariables = (env: DotenvParseOutput, mode: string) => void;

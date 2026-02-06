@@ -47,13 +47,19 @@ const parseEnv: IParseEnv = (
   content,
 ) => dotenvExpand.expand({ parsed: dotenv.parse(content) }).parsed;
 
-const setEnvVariable: ISetEnvVariable = ([key, value]) => {
+const setEnvVariable: ISetEnvVariable = (mode) => ([key, value]) => {
+  if (mode === 'secrets') core.setSecret(value);
+
   core.exportVariable(key, value);
 };
 
 const exportEnvVariables: IExportEnvVariables = (
   env,
-) => Object.entries(env).forEach(setEnvVariable);
+  mode,
+) => {
+  const setEnvVariableMode = setEnvVariable(mode);
+  Object.entries(env).forEach(setEnvVariableMode);
+};
 
 const main: IMain = async ({
   pathToFolder,
@@ -63,7 +69,7 @@ const main: IMain = async ({
   const filePath = generatePathToFile(pathToFolder, mode);
   const content = await readFile(filePath, loadMode);
   const env = parseEnv(content);
-  exportEnvVariables(env);
+  exportEnvVariables(env, mode);
 };
 
 (async () => {
